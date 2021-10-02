@@ -53,22 +53,12 @@ public:
         return NULL;
     }
 
-    int bucketLength(Node<K,V> *head) {
-        auto n = 0;
-        Node<K,V> *p = head;
-        while ( p!=NULL ) {
-            n += 1;
-            p = p->next;
-        }
-        return n;
-    }
-
     void put(K key, V value) {
         hash<K> khash;
         size_t h = khash(key);
         int i = h % this->nbuckets;
-        cout << "key" << key << "," << h << "," << i << "blen"
-            << this->bucketLength(this->buckets[i]) << "\n";
+//        cout << "key" << key << "," << h << "," << i << "blen"
+//            << this->bucketLength(this->buckets[i]) << "\n";
         Node<K,V> *p = index(this->buckets[i], key);
         if ( p!=NULL ) { // replace existing value
             p->value = value;
@@ -89,5 +79,23 @@ public:
             return p->value;
         }
         return NULL;
+    }
+
+    virtual float avgBucketLength() {
+        auto n = 0.0;
+        for (auto i=0; i<nbuckets; i++) {
+            n += bucketLength(this->buckets[i]);
+        }
+        return n / this->nbuckets;
+    }
+
+    int bucketLength(Node<K,V> *head) {
+        auto n = 0;
+        Node<K,V> *p = head;
+        while ( p!=NULL ) {
+            n += 1;
+            p = p->next;
+        }
+        return n;
     }
 };
