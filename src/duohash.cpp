@@ -8,6 +8,9 @@ using namespace std;
 
 int main()
 {
-    DuoHashTable<string,string> *h = new DuoHashTable<string,string>(101);
     cout << "Hello\n";
+    DuoHashTable<int,string> *h = new DuoHashTable<int,string>(101);
+//    unique_ptr<DuoHashTable<int,string>> h(new DuoHashTable<int,string>(101));
+    h->put(99,"parrt");
+    cout << "result" << h->get(99) << "\n";
 }
