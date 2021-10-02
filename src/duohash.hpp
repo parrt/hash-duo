@@ -25,7 +25,19 @@ public:
     DuoHashTable(int nbuckets = 101) {
         this->nbuckets = nbuckets;
 //        this->buckets = new Node<K,V>*[nbuckets]; // DOES NOT INIT THE POINTERS
-        this->buckets = new Node<K,V>*[nbuckets]();
+        this->buckets = new Node<K,V>*[nbuckets](); // WOW. new syntax with ()
+    }
+
+    ~DuoHashTable() {
+        for (auto i=0; i<nbuckets; i++) {
+            Node<K,V> *p = this->buckets[i];
+            while ( p!=NULL ) {
+                auto next = p->next;
+                delete p;
+                p = next;
+            }
+        }
+        delete this->buckets;
     }
 
     Node<K,V> *index(Node<K,V> *head, K key) {
@@ -36,15 +48,27 @@ public:
             if ( p->hashcode == h && p->key == key ) {
                 return p;
             }
+            p = p->next;
         }
         return NULL;
+    }
+
+    int bucketLength(Node<K,V> *head) {
+        auto n = 0;
+        Node<K,V> *p = head;
+        while ( p!=NULL ) {
+            n += 1;
+            p = p->next;
+        }
+        return n;
     }
 
     void put(K key, V value) {
         hash<K> khash;
         size_t h = khash(key);
         int i = h % this->nbuckets;
-        cout << "key" << key << "," << h << "," << i << "\n";
+        cout << "key" << key << "," << h << "," << i << "blen"
+            << this->bucketLength(this->buckets[i]) << "\n";
         Node<K,V> *p = index(this->buckets[i], key);
         if ( p!=NULL ) { // replace existing value
             p->value = value;
